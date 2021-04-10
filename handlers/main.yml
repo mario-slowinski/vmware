@@ -1,0 +1,15 @@
+- name: "Apply netplan configuration file"
+  tags: vmware-guest-netplan-apply
+  community.vmware.vmware_vm_shell:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    datacenter: "{{ vmware_datacenter }}"
+    vm_id: "{{ vm_guest['instance']['instance_uuid'] }}"
+    vm_id_type: instance_uuid
+    vm_username: "{{ vmware_guest_user }}"
+    vm_password: "{{ vmware_guest_password }}"
+    vm_shell: "/bin/echo"
+    vm_shell_args: "'{{ vmware_guest_password }}' | sudo -S netplan apply"
+  delegate_to: localhost

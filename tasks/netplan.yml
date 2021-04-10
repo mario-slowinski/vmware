@@ -1,0 +1,66 @@
+- name: "Create netplan configuration directory"
+  tags: vmware-guest-netplan-directory
+  file:
+    path: "{{ vmware_netplan_dir }}"
+    state: directory
+  delegate_to: localhost
+
+- name: "Create netplan configuration locally"
+  tags: vmware-guest-netplan-config
+  ansible.builtin.template:
+    src: netplan.ji2
+    dest: "{{ vmware_netplan_dir }}/{{ inventory_hostname_short }}.yaml"
+  delegate_to: localhost
+
+- name: "Copy netplan configuration file to /tmp directory"
+  tags: vmware-guest-netplan-copy
+  community.vmware.vmware_guest_file_operation:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    datacenter: "{{ vmware_datacenter }}"
+    vm_id: "{{ vm_guest['instance']['instance_uuid'] }}"
+    vm_id_type: instance_uuid
+    vm_username: "{{ vmware_guest_user }}"
+    vm_password: "{{ vmware_guest_password }}"
+    copy:
+      src: "{{ vmware_netplan_dir }}/{{ inventory_hostname_short }}.yaml"
+      dest: "/tmp/{{ vmware_folders[-1]['name'] }}.yaml"
+      overwrite: yes
+  delegate_to: localhost
+
+- name: "Clear all netplan configuration files in /etc/netplan directory"
+  tags: vmware-guest-netplan-clear
+  community.vmware.vmware_vm_shell:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    datacenter: "{{ vmware_datacenter }}"
+    vm_id: "{{ vm_guest['instance']['instance_uuid'] }}"
+    vm_id_type: instance_uuid
+    vm_username: "{{ vmware_guest_user }}"
+    vm_password: "{{ vmware_guest_password }}"
+    vm_shell: "/bin/echo"
+    vm_shell_args: "'{{ vmware_guest_password }}' | sudo -S rm -f /etc/netplan/*"
+  delegate_to: localhost
+
+- name: "Copy netplan configuration file to /etc/netplan directory"
+  tags: vmware-guest-netplan-move
+  community.vmware.vmware_vm_shell:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    datacenter: "{{ vmware_datacenter }}"
+    vm_id: "{{ vm_guest['instance']['instance_uuid'] }}"
+    vm_id_type: instance_uuid
+    vm_username: "{{ vmware_guest_user }}"
+    vm_password: "{{ vmware_guest_password }}"
+    vm_shell: "/bin/echo"
+    vm_shell_args: "'{{ vmware_guest_password }}' | sudo -S cp /tmp/{{ vmware_folders[-1]['name'] }}.yaml /etc/netplan/{{ vmware_folders[-1]['name'] }}.yaml"
+  delegate_to: localhost
+  register: vmguest_shell
+  notify: "Apply netplan configuration file"
+

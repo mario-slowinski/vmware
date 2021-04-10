@@ -1,0 +1,14 @@
+- name: "Gather VMware virtual machine info"
+  community.vmware.vmware_guest_info:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    datacenter: "{{ vmware_datacenter }}"
+    folder: "{{ vmware_folder }}"
+    name: "{{ vmware_name }}"
+    schema: "{{ vmware_guest_schema | default(omit, true) }}"
+    properties: "{{ vmware_guest_properties | default(omit, true) }}"
+  delegate_to: localhost
+  register: vmware_guest
+

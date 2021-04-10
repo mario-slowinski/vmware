@@ -1,0 +1,29 @@
+- name: "Get vCenter REST API token"
+  ansible.builtin.uri:
+    url: "{{ vmware_api }}/com/vmware/cis/session"
+    method: POST
+    validate_certs: "{{ lookup('env', 'VMWARE_VALIDATE_CERTS') | default('no', true) }}"
+    user: "{{ vmware_user }}"
+    password: "{{ vmware_password }}"
+    force_basic_auth: yes
+    return_content: yes
+  register: vmware_session
+
+- name: "Assign vCenter REST API token to variable"
+  ansible.builtin.set_fact: 
+    vmware_api_token: "{{ vmware_session.json.value }}"
+    cacheable: yes
+
+- name: "Get VM details"
+  ansible.builtin.uri:
+    url: "{{ vmware_api }}/vcenter/vm?filter.names.1={{ vmware_name }}"
+    method: GET
+    validate_certs: "{{ lookup('env', 'VMWARE_VALIDATE_CERTS') | default('no', true) }}"
+    force_basic_auth: yes
+    return_content: yes
+    headers: 
+      vmware-api-session-id: "{{ vmware_api_token }}"
+#    body_format: json
+#    body: "{ \"names\": [\"{{ vmware_name }}\"] }"
+  register: vm_guest
+  when: vm_guest is not defined
