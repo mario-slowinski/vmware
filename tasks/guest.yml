@@ -1,0 +1,34 @@
+- name: "Manage VMware virtual machine"
+  tags:
+  - vmware-guest-vm
+  community.vmware.vmware_guest:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    datacenter: "{{ vmware_datacenter }}"
+    cluster: "{{ vmware_cluster | default(omit, true) }}"
+    esxi_hostname: "{{ vmware_esxi | default(omit, true) }}"
+    folder: "{{ vmware_folder }}"
+    name: "{{ vmware_name }}"
+    annotation: "{{ vmware_annotation }}"
+    disk: "{{ vmware_disks | default(omit) }}"
+    template: "{{ vmware_template | default(omit, true) }}"
+    guest_id: "{{ vmware_guest_id | default(omit, true) }}"
+    hardware: "{{ vmware_hardware | default(omit, true) }}"
+    networks: "{{ vmware_networks | default(omit, true) }}"
+    wait_for_ip_address: "{{ vmware_ip_address_wait | default(omit, true) }}"
+    wait_for_ip_address_timeout: "{{ vmware_ip_address_wait_timeout | default(omit, true) }}"
+    customization: "{{ vmware_customization | default(omit, true) }}"
+    wait_for_customization: "{{ vmware_customization_wait | default(omit, true) }}"
+    wait_for_customization_timeout: "{{ vmware_customization_wait_timeout | default(omit, true) }}"
+    state: "{{ vmware_state | default(omit) }}"
+  delegate_to: localhost
+  register: vmware_guest
+
+- name: "Implement netplan configuration file"
+  tags: 
+  - vmware-guest-netplan
+  import_tasks: netplan.yml
+  when: vmware_guest_id == 'ubuntu64Guest'
+

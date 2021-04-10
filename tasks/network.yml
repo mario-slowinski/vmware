@@ -1,0 +1,29 @@
+- name: "Create VMware vswitch"
+  tags: 
+  - vmware-network-vswitch
+  vmware_vswitch:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    esxi_hostname: "{{ item[1] }}"
+    switch: "{{ item[0] }}"
+  loop: "{{ vmware_networks | selectattr('vlan_id','defined') | map(attribute='vswitch') | unique | product(vmware_esxis | mandatory) }}"
+  delegate_to: localhost
+
+- name: "Create VMware portgroups (with defined vlan_id) in vswitch"
+  tags: 
+  - vmware-network-portgroup
+  vmware_portgroup:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    cluster_name: "{{ vmware_cluster | default(omit) }}"
+    esxi_hostname: "{{ vmware_esxi | default(omit) }}"
+    vswitch: "{{ item['vswitch'] }}"
+    portgroup: "{{ item['name'] }}"
+    vlan_id: "{{ item['vlan_id'] }}"
+  loop: "{{ vmware_networks | selectattr('vlan_id', 'defined') | list | unique  }}"
+  delegate_to: localhost
+

@@ -1,0 +1,13 @@
+- name: "Set VMware guest storage policy"
+  community.vmware.vmware_guest_storage_policy:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    name: "{{ vmware_name }}"
+    folder: "{{ vmware_folder }}"
+    vm_home: "{{ vmware_storagepolicies['vm_home'] | default(omit, true) }}"
+    disk: "{{ vmware_storagepolicies['disk'] | default(omit, true) }}"
+  delegate_to: localhost
+  register: vmware_guest_storagepolicy
+
