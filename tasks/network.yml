@@ -8,7 +8,7 @@
     validate_certs: "{{ vmware_validate_certs | mandatory }}"
     esxi_hostname: "{{ item[1] }}"
     switch: "{{ item[0] }}"
-  loop: "{{ vmware_networks | selectattr('vlan_id','defined') | map(attribute='vswitch') | unique | product(vmware_esxis | mandatory) }}"
+  loop: "{{ vmware_networks | selectattr('vlan_id','defined') | map(attribute='vswitch') | unique | product(vmware_esxis | mandatory) | list }}"
   delegate_to: localhost
 
 - name: "Create VMware portgroups (with defined vlan_id) in vswitch"
