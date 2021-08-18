@@ -1,6 +1,5 @@
+---
 - name: "Manger folder for VMs and Templates in datacenter"
-  tags: 
-  - vmware-folder-manage
   community.vmware.vcenter_folder:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -12,4 +11,3 @@
     state: "{{ item['state'] | default(omit, true) }}"
   loop: "{{ vmware_folders }}"
   delegate_to: localhost
-
