@@ -19,6 +19,7 @@
     wait_for_ip_address: "{{ vmware_ip_address_wait | default(omit, true) }}"
     wait_for_ip_address_timeout: "{{ vmware_ip_address_wait_timeout | default(omit, true) }}"
     customization: "{{ vmware_customization | default(omit, true) }}"
+    advanced_settings: "{{ vmware_advanced_settings | default(omit, true) }}"
     wait_for_customization: "{{ vmware_customization_wait | default(omit, true) }}"
     wait_for_customization_timeout: "{{ vmware_customization_wait_timeout | default(omit, true) }}"
     state: "{{ vmware_state | default(omit) }}"
