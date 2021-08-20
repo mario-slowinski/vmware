@@ -1,19 +1,34 @@
 ---
 - name: "Manage VMware vCenter folders"
-  tags: vmware.folder
+  tags:
+    - vmware
+    - vmware.folder
   import_tasks: folder.yml
   when: vmware_folders | length > 0
 
 - name: "Manage VMware network"
-  tags: vmware.network
+  tags:
+    - vmware
+    - vmware.network
   import_tasks: network.yml
   when: vmware_networks | selectattr('vlan_id','defined') | length > 0
 
 - name: "Manage VMware guest"
-  tags: vmware.guest
+  tags:
+    - vmware
+    - vmware.guest
   import_tasks: guest.yml
 
+- name: "Manage VMware guest custom attributes"
+  tags:
+    - vmware
+    - vmware.guest_custom
+  import_tasks: guest_custom.yaml
+  when: vmware_guest_custom_attributes is defined
+
 - name: "Manage VM Storage Policy"
-  tags: vmware.storagepolicy
+  tags:
+    - vmware
+    - vmware.storagepolicy
   import_tasks: storagepolicy.yml
   when: vmware_storagepolicies['vm_home'] != "" or vmware_storagepolicies['disk'] | length > 0
