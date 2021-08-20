@@ -1,7 +1,5 @@
 ---
 - name: "Manage VMware virtual machine"
-  tags:
-    - vmware.guest.vm
   community.vmware.vmware_guest:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -26,10 +24,3 @@
     state: "{{ vmware_state | default(omit) }}"
   delegate_to: localhost
   register: vmware_guest
-
-- name: "Implement netplan configuration file"
-  tags: 
-    - vmware.guest.netplan
-    - never
-  import_tasks: netplan.yml
-  when: vmware_guest_id == 'ubuntu64Guest'
