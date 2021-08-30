@@ -20,7 +20,7 @@
     guest_id: "{{ vmware_guest_id | default(omit, true) }}"
     hardware: "{{ vmware_hardware | default(omit, true) }}"
     # if vm has no vmtools installed setting networks fails
-    #networks: "{{ vmware_networks | default(omit, true) }}"
+    networks: "{{ (vmware_networks | selectattr('ip','defined') | length > 0) | ternary(vmware_networks | default(omit, true),omit) }}"
     wait_for_ip_address: "{{ vmware_ip_address_wait | default(omit, true) }}"
     wait_for_ip_address_timeout: "{{ vmware_ip_address_wait_timeout | default(omit, true) }}"
     customization: "{{ vmware_customization | default(omit, true) }}"
@@ -54,5 +54,8 @@
     start_connected: "{{ item['start_connected'] | default(omit) }}"
     state: "{{ item['state'] | default(omit) }}"
   loop: "{{ vmware_networks }}"
+  loop_control:
+    label: "{{ item['label'] }}"
+  when: item['ip'] is not defined
   delegate_to: localhost
   register: vmware_guest
