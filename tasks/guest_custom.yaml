@@ -1,20 +1,5 @@
 ---
-# name is not supported => unable to select VM guest to manage custom attributes defs
-#- name: "Manage virtual machine custom attributes defs"
-#  community.vmware.vmware_guest_custom_attribute_defs:
-#    hostname: "{{ vmware_host | mandatory }}"
-#    username: "{{ vmware_user | mandatory }}"
-#    password: "{{ vmware_password | mandatory }}"
-#    validate_certs: "{{ vmware_validate_certs | mandatory }}"
-#    name: "{{ vmware_name }}"
-#    state: "{{ item['state'] | default(omit) }}"
-#    attribute_key: "{{ item[1]['name'] }}"
-#  loop: "{{ vmware_guest_custom_attributes | subelements('attributes') }}"
-#  loop_control:
-#    label: "{{ item[1]['name'] }} state={{ item[0]['state'] | default('present') }}"
-#  delegate_to: localhost
-
-- name: "Manage virtual machine custom attributes"
+- name: "Manage VMware guest custom attributes"
   community.vmware.vmware_guest_custom_attributes:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -26,4 +11,17 @@
   loop: "{{ vmware_guest_custom_attributes }}"
   loop_control:
     label: "{{ item['attributes'] | map(attribute='name') }} state={{ item['state'] | default('present') }}"
+  delegate_to: localhost
+
+- name: "Manage virtual machine custom attributes defs"
+  community.vmware.vmware_guest_custom_attribute_defs:
+    hostname: "{{ vmware_host | mandatory }}"
+    username: "{{ vmware_user | mandatory }}"
+    password: "{{ vmware_password | mandatory }}"
+    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    state: "{{ item['state'] | default(omit) }}"
+    attribute_key: "{{ item[1]['name'] }}"
+  loop: "{{ vmware_guest_custom_attributes | subelements('attributes') }}"
+  loop_control:
+    label: "{{ item[1]['name'] }} state={{ item[0]['state'] | default('present') }}"
   delegate_to: localhost
