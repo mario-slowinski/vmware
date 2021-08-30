@@ -1,21 +1,26 @@
 ---
-- name: "Manage VMware virtual machine"
+- name: "Manage VMware guest vm"
+  tags:
+    - vmware.guest.vm
   community.vmware.vmware_guest:
-    hostname: "{{ vmware_host | mandatory }}"
-    username: "{{ vmware_user | mandatory }}"
-    password: "{{ vmware_password | mandatory }}"
-    validate_certs: "{{ vmware_validate_certs | mandatory }}"
+    hostname: "{{ vmware_host | default(omit) }}"
+    username: "{{ vmware_user | default(omit) }}"
+    password: "{{ vmware_password | default(omit) }}"
+    validate_certs: "{{ vmware_validate_certs | default(omit) }}"
     datacenter: "{{ vmware_datacenter }}"
     cluster: "{{ vmware_cluster | default(omit, true) }}"
     esxi_hostname: "{{ vmware_esxi | default(omit, true) }}"
     folder: "{{ vmware_folder }}"
-    name: "{{ vmware_name }}"
+    name: "{{ vmware_name | default(omit, true) }}"
+    moid: "{{ vmware_moid | default(omit, true) }}"
+    uuid: "{{ vmware_uuid | default(omit, true) }}"
     annotation: "{{ vmware_annotation }}"
     disk: "{{ vmware_disks | default(omit) }}"
     template: "{{ vmware_template | default(omit, true) }}"
     guest_id: "{{ vmware_guest_id | default(omit, true) }}"
     hardware: "{{ vmware_hardware | default(omit, true) }}"
-    networks: "{{ vmware_networks | default(omit, true) }}"
+    # if vm has no vmtools installed setting networks fails
+    #networks: "{{ vmware_networks | default(omit, true) }}"
     wait_for_ip_address: "{{ vmware_ip_address_wait | default(omit, true) }}"
     wait_for_ip_address_timeout: "{{ vmware_ip_address_wait_timeout | default(omit, true) }}"
     customization: "{{ vmware_customization | default(omit, true) }}"
@@ -23,5 +28,31 @@
     wait_for_customization: "{{ vmware_customization_wait | default(omit, true) }}"
     wait_for_customization_timeout: "{{ vmware_customization_wait_timeout | default(omit, true) }}"
     state: "{{ vmware_state | default(omit) }}"
+  delegate_to: localhost
+  register: vmware_guest
+
+- name: "Manage VMware guest network"
+  tags:
+    - vmware.guest.network
+  community.vmware.vmware_guest_network:
+    hostname: "{{ vmware_host | default(omit) }}"
+    username: "{{ vmware_user | default(omit) }}"
+    password: "{{ vmware_password | default(omit) }}"
+    validate_certs: "{{ vmware_validate_certs | default(omit) }}"
+    datacenter: "{{ vmware_datacenter }}"
+    esxi_hostname: "{{ vmware_esxi | default(omit, true) }}"
+    folder: "{{ vmware_folder }}"
+    name: "{{ vmware_name | default(omit, true) }}"
+    moid: "{{ vmware_moid | default(omit, true) }}"
+    uuid: "{{ vmware_uuid | default(omit, true) }}"
+    label: "{{ item['label'] }}"
+    mac_address: "{{ item['mac_address'] | default(omit) }}"
+    device_type: "{{ item['device_type'] | default(omit) }}"
+    directpath_io: "{{ item['directpath_io'] | default(omit) }}"
+    network_name: "{{ item['name'] | default(omit) }}"
+    switch: "{{ item['dvswitch'] | default(omit) }}"
+    start_connected: "{{ item['start_connected'] | default(omit) }}"
+    state: "{{ item['state'] | default(omit) }}"
+  loop: "{{ vmware_networks }}"
   delegate_to: localhost
   register: vmware_guest
