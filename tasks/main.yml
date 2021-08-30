@@ -24,7 +24,7 @@
     - vmware
     - vmware.guest_custom
   import_tasks: guest_custom.yaml
-  when: vmware_guest_custom_attributes is defined
+  when: vmware_guest_custom_attributes | length > 0
 
 - name: "Manage VM Storage Policy"
   tags:
