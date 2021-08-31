@@ -3,21 +3,21 @@
   tags:
     - vmware
     - vmware.folder
-  import_tasks: folder.yml
+  import_tasks: folder.yaml
   when: vmware_folders | length > 0
 
 - name: "Manage VMware network"
   tags:
     - vmware
     - vmware.network
-  import_tasks: network.yml
+  import_tasks: network.yaml
   when: vmware_networks | selectattr('vlan_id','defined') | length > 0
 
 - name: "Manage VMware guest"
   tags:
     - vmware
     - vmware.guest
-  import_tasks: guest.yml
+  import_tasks: guest.yaml
 
 - name: "Manage VMware guest custom attributes"
   tags:
@@ -30,5 +30,5 @@
   tags:
     - vmware
     - vmware.storagepolicy
-  import_tasks: storagepolicy.yml
+  import_tasks: storagepolicy.yaml
   when: vmware_storagepolicies['vm_home'] != "" or vmware_storagepolicies['disk'] | length > 0

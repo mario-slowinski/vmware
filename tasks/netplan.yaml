@@ -1,19 +1,20 @@
+---
 - name: "Create netplan configuration directory"
-  tags: vmware-guest-netplan-directory
+  tags: vmware.guest.netplan.directory
   file:
     path: "{{ vmware_netplan_dir }}"
     state: directory
   delegate_to: localhost
 
 - name: "Create netplan configuration locally"
-  tags: vmware-guest-netplan-config
+  tags: vmware.guest.netplan.config
   ansible.builtin.template:
     src: netplan.ji2
     dest: "{{ vmware_netplan_dir }}/{{ inventory_hostname_short }}.yaml"
   delegate_to: localhost
 
 - name: "Copy netplan configuration file to /tmp directory"
-  tags: vmware-guest-netplan-copy
+  tags: vmware.guest.netplan.copy
   community.vmware.vmware_guest_file_operation:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -27,11 +28,11 @@
     copy:
       src: "{{ vmware_netplan_dir }}/{{ inventory_hostname_short }}.yaml"
       dest: "/tmp/{{ vmware_folders[-1]['name'] }}.yaml"
-      overwrite: yes
+      overwrite: true
   delegate_to: localhost
 
 - name: "Clear all netplan configuration files in /etc/netplan directory"
-  tags: vmware-guest-netplan-clear
+  tags: vmware.guest.netplan.clear
   community.vmware.vmware_vm_shell:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -47,7 +48,7 @@
   delegate_to: localhost
 
 - name: "Copy netplan configuration file to /etc/netplan directory"
-  tags: vmware-guest-netplan-move
+  tags: vmware.guest.netplan.move
   community.vmware.vmware_vm_shell:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -63,4 +64,3 @@
   delegate_to: localhost
   register: vmguest_shell
   notify: "Apply netplan configuration file"
-

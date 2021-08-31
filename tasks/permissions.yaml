@@ -1,13 +1,11 @@
+---
 - name: "Set student permission for vCenter VM and Templates folder"
-  tags: 
-  - vmware-permissions-student
   community.vmware.vmware_object_role_permission:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
     password: "{{ vmware_password | mandatory }}"
     validate_certs: "{{ vmware_validate_certs | mandatory }}"
     object_name: "{{ vmware_folder | mandatory }}"
-    principal: "{{ vmware_user | mandatory }}"
+    principal: "{{ vmware_principal | mandatory }}"
     role: "{{ vmware_role | mandatory }}"
   delegate_to: localhost
-

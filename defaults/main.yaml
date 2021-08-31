@@ -1,3 +1,4 @@
+---
 vmware_host: "{{ lookup('env', 'VMWARE_HOST') }}"
 vmware_user: "{{ lookup('env', 'VMWARE_USER') }}"
 vmware_password: "{{ lookup('env', 'VMWARE_PASSWORD') }}"
@@ -13,16 +14,16 @@ vmware_esxis: []
 vmware_datastores: []
 
 vmware_folders: []
-#- name: "folder"
-#- name: "subfolder"
-#  parent: "folder"
+#  - name: "folder"
+#  - name: "subfolder"
+#    parent: "folder"
 vmware_folder: "{{ vmware_folders[-1]['parent']+'/' if vmware_folders[-1]['parent'] is defined else '' }}{{ vmware_folders[-1]['name'] }}"
 
 vmware_guest_id: ""
 
 vmware_disks: []
-#- datastore: "{{ vmware_datastores[0] }}"
-#  size_gb: 10
+#  - datastore: "{{ vmware_datastores[0] }}"
+#    size_gb: 10
 
 vmware_hardware: []
 #  num_cpus: 1
@@ -30,27 +31,28 @@ vmware_hardware: []
 #  scsi: "paravirtual"
 
 vmware_networks: []
-#- name: "VM Network"
-#  type: "static"
-#  ip: "{{ ansible_host | default(lookup('community.general.dig', inventory_hostname)) }}"
-#  netmask: ""
-#  gateway: ""
-#  start_connected: yes
+#  - name: "VM Network"
+#    type: "static"
+#    ip: "{{ ansible_host | default(lookup('community.general.dig', inventory_hostname)) }}"
+#    netmask: ""
+#    gateway: ""
+#    start_connected: yes
 
 vmware_customization: []
 #  hostname: "{{ inventory_hostname_short }}"
 #  timezone: "Europe/Warsaw"
 #  dns_servers: []
-#  dns_suffix: [] 
+#  dns_suffix: []
 #  domain: example.com
 
-vmware_ip_address_wait: no
+vmware_ip_address_wait: false
 vmware_ip_address_wait_timeout: 30
-vmware_customization_wait: no
+vmware_customization_wait: false
 vmware_customization_wait_timeout: 30
 
 vmware_netplan_dir: "netplan"
 
+vmware_principal: ""
 vmware_guest_user: ""
 vmware_guest_password: ""
 

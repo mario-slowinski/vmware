@@ -1,6 +1,6 @@
+---
 - name: "Create VMware vswitch"
-  tags: 
-  - vmware-network-vswitch
+  tags: vmware.network.vswitch
   vmware_vswitch:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -12,8 +12,7 @@
   delegate_to: localhost
 
 - name: "Create VMware portgroups (with defined vlan_id) in vswitch"
-  tags: 
-  - vmware-network-portgroup
+  tags: vmware.network.portgroup
   vmware_portgroup:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
@@ -26,4 +25,3 @@
     vlan_id: "{{ item['vlan_id'] }}"
   loop: "{{ vmware_networks | selectattr('vlan_id', 'defined') | list | unique  }}"
   delegate_to: localhost
-

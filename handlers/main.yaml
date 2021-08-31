@@ -1,5 +1,5 @@
+---
 - name: "Apply netplan configuration file"
-  tags: vmware-guest-netplan-apply
   community.vmware.vmware_vm_shell:
     hostname: "{{ vmware_host | mandatory }}"
     username: "{{ vmware_user | mandatory }}"
