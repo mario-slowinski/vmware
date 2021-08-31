@@ -4,6 +4,7 @@
   file:
     path: "{{ vmware_netplan_dir }}"
     state: directory
+    mode: 0o755
   delegate_to: localhost
 
 - name: "Create netplan configuration locally"
