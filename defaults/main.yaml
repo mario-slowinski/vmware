@@ -36,6 +36,7 @@ vmware_networks: []
 #    ip: "{{ ansible_host | default(lookup('community.general.dig', inventory_hostname)) }}"
 #    netmask: ""
 #    gateway: ""
+#    label: "Network adapter 1"
 #    start_connected: yes
 
 vmware_customization: []
@@ -58,7 +59,6 @@ vmware_guest_password: ""
 
 vmware_guest_schema: "summary"
 vmware_guest_properties: ""
-
 
 vmware_storagepolicies:
   vm_home: ""
