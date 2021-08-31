@@ -1,3 +1,4 @@
+---
 - name: "Set VMware guest storage policy"
   community.vmware.vmware_guest_storage_policy:
     hostname: "{{ vmware_host | mandatory }}"
@@ -10,4 +11,3 @@
     disk: "{{ vmware_storagepolicies['disk'] | default(omit, true) }}"
   delegate_to: localhost
   register: vmware_guest_storagepolicy
-
