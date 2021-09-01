@@ -3,6 +3,55 @@ vmware
 
 Ansible role to manage [VMware](https://www.vmware.com/) objects.
 
+Description
+-----------
+
+* ### network ###
+
+  `vmware_networks` is a list of interfaces to be set on VMware guest
+  * if list element **contains** `vlan_id` attribute, named `vswitch` and `portgroup` will be created on `vmware_esxis` servers
+  * if list element **does not contain** `vlan_id` attribute, `portgroup` should already exist and will be just assigned to VMware guest
+  * if list elements **contains** `ip` attribute, will do network customization which requires VMware tools installed or task fails
+  * if list elements **does not contain** `ip` attribute, *Manage VMware guest network* task will launch to assign `portgroup` or other interface properties
+
+  [`vmware_guest`](https://docs.ansible.com/ansible/latest/collections/community/vmware/vmware_guest_module.html) ansible module performs network customization even if `networks` list contains only `portgroup` name so [`vmware_guest_network`](https://docs.ansible.com/ansible/latest/collections/community/vmware/vmware_guest_network_module.html) module must be used in second task even if only to change `portgroup`
+
+* ### folders ###
+
+  `vmware_folders` list contains elements which combines to vCenter VM and Templates folder path, i.e. below will create `/<vmware_datacenter>/vm/folder/subfolder/child`
+  
+  ```yaml
+    vmware_folders:
+      - name: "folder"
+      - name: "subfolder"
+        parent: "folder"
+      - name: "child"
+        parent: "folder/subfolder"
+  ```
+
+* ### guest ###
+
+  Create `vmware_name` VMware guest or clone it from `vmware_template` and optionally reconfigure it with:
+
+  * `vmware_guest_id` - one of [guest_id](https://code.vmware.com/apis/358/doc/vim.vm.GuestOsDescriptor.GuestOsIdentifier.html) list, not required for cloning,
+  * `vmware_hardware` - vCPU and memory
+  * `vmware_disks` - datastore and size
+  * `vmware_annotation`
+  * `vmware_customization`
+  * `vmware_networks` - list of network interfaces with possible [customization](#network)
+
+* ### guest_info ###
+
+  Get and store in `vmware_guest` variable details about VMware guest or template.
+
+* ### permissions ###
+
+  Set `vmware_role` for `vmware_principal` user on `vmware_folder` (it's only supported type at the moment)
+
+* ### storagepolicy ###
+
+  Set storage `policy` on `vm_home` or per each `disk` selected by `unit_number`.
+
 Requirements
 ------------
 
