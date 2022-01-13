@@ -51,7 +51,9 @@
     directpath_io: "{{ item['directpath_io'] | default(omit) }}"
     network_name: "{{ item['name'] | default(omit) }}"
     switch: "{{ item['dvswitch'] | default(omit) }}"
+    connected: "{{ item['connected'] | default(omit) }}"
     start_connected: "{{ item['start_connected'] | default(omit) }}"
+    vlan_id: "{{ item['vlan_id'] | default(omit) }}"
     state: "{{ item['state'] | default(omit) }}"
   loop: "{{ vmware_networks }}"
   loop_control:
