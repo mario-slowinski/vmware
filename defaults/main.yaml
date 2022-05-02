@@ -60,6 +60,8 @@ vmware_guest_password: ""
 vmware_guest_schema: "summary"
 vmware_guest_properties: ""
 
+vmware_guest_custom_attributes: []
+
 vmware_storagepolicies:
   vm_home: ""
   disk: []
