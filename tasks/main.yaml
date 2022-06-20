@@ -13,6 +13,12 @@
   import_tasks: network.yaml
   when: vmware_networks | selectattr('vlan_id','defined') | length > 0
 
+- name: "Get VMware guest info"
+  tags:
+    - vmware
+    - vmware.guest_info
+  import_tasks: guest_info.yaml
+
 - name: "Manage VMware guest"
   tags:
     - vmware
